@@ -9,7 +9,7 @@
 
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
-    <link rel="stylesheet" href="css/css.css">
+    <link rel="stylesheet" href="/css/css.css">
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
@@ -21,7 +21,7 @@
 
     <div class="row">
         <div class="col-md-2">
-            <img src="img/logo.png" class="logo">
+            <img src="/img/logo.png" class="logo">
         </div>
         <div class="col-md-10">
             <h1>Site de Exemplo</h1>
@@ -30,16 +30,22 @@
 
     <div class="row">
         <div class="col-md-12">
-            <?php require_once("menu.php"); ?>
+            <?php require_once("src/menu.php"); ?>
         </div>
     </div>
 
     <?php
-    $opcoes = array('contato.php', 'empresa.php', 'home.php', 'produtos.php', 'servicos.php');
+    $opcoes = array('contato', 'empresa', 'home', 'produtos', 'servicos');
 
-    $arquivo = $_GET["arquivo"];
+    $rota = parse_url("http://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
 
-    in_array($arquivo, $opcoes) ? require_once($_GET["arquivo"]) : require_once("home.php");
+    $path = preg_split("/\//", $rota['path']);
+
+    if($path[1]){
+        in_array($path[1], $opcoes) ? require_once("src/".$path[1].".php") : require_once("src/notfound.php");
+    } else {
+        require_once("src/home.php");
+    }
     ?>
 
     <div class="row">
