@@ -1,3 +1,35 @@
+<?php
+
+$rota = parse_url("http://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
+
+function route($rota)
+{
+    $path = preg_split("/\//", $rota['path']);
+
+    $opcoes = array('contato', 'empresa', 'home', 'produtos', 'servicos');
+
+    if($path[1]){
+
+        if(in_array($path[1], $opcoes)){
+
+            return "src/".$path[1].".php";
+
+        } else {
+
+            $protocol = (isset($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.0');
+
+            header($protocol . ' ' . 404 . ' Pagina nao encontrada');
+
+            return "404.php";
+
+        }
+    }
+
+    return "src/home.php";
+}
+
+?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -35,17 +67,7 @@
     </div>
 
     <?php
-    $opcoes = array('contato', 'empresa', 'home', 'produtos', 'servicos');
-
-    $rota = parse_url("http://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
-
-    $path = preg_split("/\//", $rota['path']);
-
-    if($path[1]){
-        in_array($path[1], $opcoes) ? require_once("src/".$path[1].".php") : require_once("src/notfound.php");
-    } else {
-        require_once("src/home.php");
-    }
+    require_once(route($rota));
     ?>
 
     <div class="row">
